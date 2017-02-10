@@ -1,0 +1,58 @@
+/* Top left panel */
+@media screen and (min-width: 1401px) {
+	div.ralphy {
+		background: url("ralphy.gif") 0px 0px;
+		width: 250px;
+		height: 187px;
+	}
+}
+
+/* Top right panel */
+@media screen and (min-width: 1201px)
+	      and (max-width: 1400px) {
+	div.ralphy {
+		background: url("ralphy.gif") 250px 0px;
+		width: 250px;
+		height: 187px;
+	}
+}
+
+/* Middle left panel */
+@media screen and (min-width: 1001px)
+	      and (max-width: 1200px) {
+	div.ralphy {
+		background: url("ralphy.gif") 0px -187px;
+		width: 250px;
+		height: 187px;
+	}
+}
+
+/* Middle right panel */
+@media screen and (min-width: 801px)
+	      and (max-width: 1000px) {
+	div.ralphy {
+		background: url("ralphy.gif") 250px -187px;
+		width: 250px;
+		height: 187px;
+	}
+}
+
+/* Bottom left panel */
+@media screen and (min-width: 601px)
+	      and (max-width: 800px) {
+	div.ralphy {
+		background: url("ralphy.gif") 0px -373px;
+		width: 250px;
+		height: 187px;
+	}
+}
+
+/* Bottom right panel */
+@media screen and (min-width: 0px)
+	      and (max-width: 600px) {
+	div.ralphy {
+		background: url("ralphy.gif") 250px -373px;
+		width: 250px;
+		height: 187px;
+	}
+}
