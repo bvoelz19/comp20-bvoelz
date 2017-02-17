@@ -15,10 +15,41 @@
 
 <script>
 	var video = document.getElementById('failvideo');
-	video.addEventListener('timeupdate', function display_lyrics() {
+	video.addEventListener('timeupdate', function display_lyrics(id) {
 		var currentTimeMs = video.currentTime;
-		if (currentTimeMs < 10) {
-			console.log("first ten seconds");
+		var text = document.getElementById('lyrics');
+		if (currentTimeMs > 8 && currentTimeMs < 13) {
+			text.innerHTML = "You've got me feelin' emotions";
+		} else if (currentTimeMs > 13 && currentTimeMs < 17) {
+			text.innerHTML = "Deeper than I've ever dreamed of";
+		} else if (currentTimeMs > 17 && currentTimeMs < 21) {
+			text.innerHTML = "You've got me feelin' emotions";
+		} else if (currentTimeMs > 21 && currentTimeMs < 25) {
+			text.innerHTML = "Higher than the heavens above";
+		} else if (currentTimeMs > 25 && currentTimeMs < 28) {
+			text.innerHTML = "I feel good, I feel nice";
+		} else if (currentTimeMs > 28 && currentTimeMs < 34) {
+			text.innerHTML = "I've never felt so satisfied";
+		} else if (currentTimeMs > 34 && currentTimeMs < 37) {
+			text.innerHTML = "I'm in love, I'm alive";
+		} else if (currentTimeMs > 37 && currentTimeMs < 42) {
+			text.innerHTML = "Intoxicated, flyin' high";
+		} else if (currentTimeMs > 42 && currentTimeMs < 45) {
+			text.innerHTML = "Feels like a dream";
+		} else if (currentTimeMs > 45 && currentTimeMs < 50) {
+			text.innerHTML = "When you touch me tenderly";
+		} else if (currentTimeMs > 50 && currentTimeMs < 53) {
+			text.innerHTML = "I don't know if it's real";
+		} else if (currentTimeMs > 53 && currentTimeMs < 59) {
+			text.innerHTML = "But I like the way I feel inside";
+		} else if (currentTimeMs > 59 && currentTimeMs < 63) {
+			text.innerHTML = "You've got me feelin' emotions";
+		} else if (currentTimeMs > 63 && currentTimeMs < 67) {
+			text.innerHTML = "Deeper than I've ever dreamed of";
+		} else if (currentTimeMs > 67 && currentTimeMs < 71) {
+			text.innerHTML = "You've got me feelin' emotions";
+		} else if (currentTimeMs > 71 && currentTimeMs < 80) {
+			text.innerHTML = "Higher than the heavens above";
 		}
 		console.log(currentTimeMs);
 	}, false);
