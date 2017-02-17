@@ -15,8 +15,11 @@
 
 <script>
 	var video = document.getElementById('failvideo');
-	video.addEventListener('timeupdate', function() {
+	video.addEventListener('timeupdate', function display_lyrics() {
 		var currentTimeMs = video.currentTime;
+		if (currentTimeMs < 10) {
+			console.log("first ten seconds");
+		}
 		console.log(currentTimeMs);
 	}, false);
 </script>
