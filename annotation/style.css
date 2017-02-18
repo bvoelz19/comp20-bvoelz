@@ -3,6 +3,11 @@
 	color: white;
 	font-size: 24px;
 	font-family: "Comic Sans MS";
+	  text-shadow:
+  		-1px -1px 0 #000,  
+		 1px -1px 0 #000,
+    	        -1px 1px 0 #000,
+     		 1px 1px 0 #000;
 }
 
 h1 {
@@ -14,6 +19,10 @@ h1 {
 video {
 	display: block;
 	margin: 0 auto;
+	border-right: solid;
+	border-left: solid;
+	border-top: solid;
+	border-bottom: solid;
 }
 
 body {
