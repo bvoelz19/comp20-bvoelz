@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+
+        <head>
+                <title>Not Uber</title>
+                <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+                <link rel="stylesheet" href="style.css" />
+                
+                <script>
+                        var my_lat = 0;
+                        var my_lng = 0;
+                        var xhr = new XMLHttpRequest();
+                        var me = new google.maps.LatLng(my_lat, my_lng);
+                        var myOptions = {
+                                                zoom: 15, // The larger the zoom number, the bigger the zoom
+                                                center: me,
+                                                mapTypeId: google.maps.MapTypeId.ROADMAP
+                                        }
+                        var map;
+                        var marker;
+                        var infowindow = new google.maps.InfoWindow();
+                        
+                        function init()
+                        {
+                                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                                getMyLocation();
+                        }
+                        
+                        function getMyLocation() {
+                                if (navigator.geolocation) { 
+                                        navigator.geolocation.getCurrentPosition(function(position) {
+                                                my_lat = position.coords.latitude;
+                                                my_lng = position.coords.longitude;
+                                                renderMap(getData());
+                                        });
+                                }
+                                else {
+                                        alert("Geolocation unsupported on this browser");
+                                }
+                        }
+
+                        function getData() {
+                                var url = "https://defense-in-derpth.herokuapp.com/submit";
+                                xhr.open("POST", url, true);
+                                xhr.setRequestHeader = ("Content-type", "application/x-www-form-urlencoded");
+                                
+                                xhr.onreadystatechange = function() { //Call a function when the state changes.
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                                console.log("Response: " + xhr.responseText);
+                                                return xhr.responseText;
+                                        }
+                                }
+                                
+                                xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
+                        }
+
+                        function renderMap(data)
+                        {
+                                me = new google.maps.LatLng(my_lat, my_lng);
+                                
+                                // Update map and go there
+                                map.panTo(me);
+                                
+                                // New icon image
+                                var image = {
+                                        url: "person.png",
+                                        size: new google.maps.Size(30, 30),
+                                        scaledSize: new google.maps.Size(30, 30)
+                                }
+
+                                for (i = 0; i < data.length(); i++) {
+
+                                        
+                                        // Create a marker
+                                        marker = new google.maps.Marker ({
+                                                position: me,
+                                                title: "Temp",
+                                                icon: image
+                                        });
+                                        marker.setMap(map);
+                                                
+                                        // Open info window on when you click on the marker
+                                        google.maps.event.addListener(marker, 'click', function() {
+                                                infowindow.setContent(marker.title);
+                                                infowindow.open(map, marker);
+                                        });
+                                }
+                        }
+
+                </script>
+        </head>
+        
+        <body onload="init()">
+                <div id="map_canvas"></div>
+        </body>
+</html>
