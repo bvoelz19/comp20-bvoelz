@@ -33,7 +33,9 @@
                                         navigator.geolocation.getCurrentPosition(function(position) {
                                                 my_lat = position.coords.latitude;
                                                 my_lng = position.coords.longitude;
-                                                renderMap(getData());
+                                                req_data = getData();
+                                                console.log("req_data: " + req_data);
+                                                renderMap(req_data);
                                         });
                                 }
                                 else {
@@ -42,21 +44,22 @@
                         }
 
                         function getData() {
-                                var url = "https://defense-in-derpth.herokuapp.com/submit";
+                                url = "https://defense-in-derpth.herokuapp.com/submit";
                                 xhr.open("POST", url, true);
-                                xhr.setRequestHeader = ("Content-type", "application/x-www-form-urlencoded");
+                                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                                 
                                 xhr.onreadystatechange = function() { //Call a function when the state changes.
                                         if (xhr.readyState == 4 && xhr.status == 200) {
-                                                console.log("Response: " + xhr.responseText);
-                                                return JSON.parse(xhr.responseText);
+                                                var data = JSON.parse(xhr.responseText);
+                                                console.log(data);
+                                                return data;
                                         }
                                 }
-                                
+
                                 xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
                         }
 
-                        function renderMap(data)
+                        function renderMap(map_data)
                         {
                                 me = new google.maps.LatLng(my_lat, my_lng);
                                 
@@ -84,7 +87,7 @@
 
                                 // Put others on the map
                                 /*for (i = 0; i < 1; i++) {
-                                        //var pos = new google.maps.LatLng();
+                                        var pos = new google.maps.LatLng(vehicles[i].lat, data.vehicles[i].lng);
                                         
                                         // Create a marker
                                         marker = new google.maps.Marker ({
@@ -99,7 +102,7 @@
                                                 infowindow.setContent(marker.title);
                                                 infowindow.open(map, marker);
                                         });
-                                }*/
+                                } */
                         }
 
                 </script>
