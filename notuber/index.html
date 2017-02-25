@@ -19,6 +19,7 @@
                                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                                         }
                         var map;
+                        var my_data;
                         var marker;
                         var infowindow = new google.maps.InfoWindow();
                         
@@ -33,9 +34,9 @@
                                         navigator.geolocation.getCurrentPosition(function(position) {
                                                 my_lat = position.coords.latitude;
                                                 my_lng = position.coords.longitude;
-                                                req_data = getData();
-                                                console.log("req_data: " + req_data);
-                                                renderMap(req_data);
+                                                wrapperGetData();
+                                                console.log("1");
+                                                renderMap();
                                         });
                                 }
                                 else {
@@ -43,26 +44,28 @@
                                 }
                         }
 
-                        function getData() {
+                        function wrapperGetData() {
                                 url = "https://defense-in-derpth.herokuapp.com/submit";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                                 
                                 xhr.onreadystatechange = function() { //Call a function when the state changes.
-                                        if (xhr.readyState == 4 && xhr.status == 200) {
-                                                var data = JSON.parse(xhr.responseText);
-                                                console.log(data);
-                                                return data;
+                                        if (this.readyState == 4 && this.status == 200) {
+                                                console.log(xhr.responseText);
+                                                my_data = JSON.parse(xhr.responseText);
                                         }
                                 }
 
                                 xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
                         }
 
-                        function renderMap(map_data)
+                        function renderMap()
                         {
+                                console.log("2");
                                 me = new google.maps.LatLng(my_lat, my_lng);
                                 
+                                console.log("vehicles length: " + my_data.["vehicles"].length);
+
                                 // Update map and go there
                                 map.panTo(me);
                                 
@@ -85,13 +88,17 @@
                                         infowindow.open(map, marker);
                                 });
 
+
+                                if (my_data == undefined) {
+                                        return;
+                                }
                                 // Put others on the map
-                                /*for (i = 0; i < 1; i++) {
-                                        var pos = new google.maps.LatLng(vehicles[i].lat, data.vehicles[i].lng);
+                                for (i = 0; i < 1; i++) {
+                                        //var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
                                         
                                         // Create a marker
                                         marker = new google.maps.Marker ({
-                                                position: pos,
+                                                //position: pos,
                                                 title: "Temp",
                                                 icon: image
                                         });
@@ -102,7 +109,7 @@
                                                 infowindow.setContent(marker.title);
                                                 infowindow.open(map, marker);
                                         });
-                                } */
+                                }
                         }
 
                 </script>
