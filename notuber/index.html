@@ -24,12 +24,11 @@
                         
                         function init()
                         {
-                                console.log("1");
                                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-                                getMyLocation();
+                                run();
                         }
                         
-                        function getMyLocation() {
+                        function run() {
                                 if (navigator.geolocation) { 
                                         navigator.geolocation.getCurrentPosition(function(position) {
                                                 my_lat = position.coords.latitude;
@@ -56,22 +55,44 @@
                                 xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
                         }
 
-                        function handleMarkerClick(marker, index)
+                        function handleMarkerClick(marker, index, my_data)
                         {
                                 return function() {
-                                        stringContent = '<div id="username">' + marker.title + '<br/></div>' + '<div id="infoWindow">...is ' + 0 + ' miles away from me</div>';
+                                        dist = distance_away(my_data, index, my_lat, my_lng);
+                                        stringContent = '<div id="username">' + marker.title + '<br/></div>' + '<div id="infoWindow">...is ' + dist + ' miles away from me</div>';
                                         infowindow.setContent(stringContent);
                                         infowindow.open(map, marker);
                                 };
                         }
 
-                        function renderMap(my_data)
+                        function distance_away(my_data, index, my_lat, my_lng)
                         {
+                                console.log("beginning of distance_away");
+                                var R = 6371; // metres
+                                var φ1 = toRad(my_lat);
+                                var φ2 = toRad(my_data.vehicles[index].lat);
+                                var Δφ = toRad((my_data.vehicles[index].lat - my_lat));
+                                var Δλ = toRad((my_data.vehicles[index].lng - my_lng));
+
+                                var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                                        Math.cos(φ1) * Math.cos(φ2) *
+                                        Math.sin(Δλ/2) * Math.sin(Δλ/2);
+                                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+                                var d = R * c;
+                                console.log("d: " + d);
+                                return d;
+                        }
+
+                        function toRad(x) {
+                                return x * Math.PI / 180;
+                        }
+
+                        function renderMap(my_data)
+                        {                                
                                 console.log(my_data);
-                                console.log("2");
+                                // Update map to my location and go there
                                 me = new google.maps.LatLng(my_lat, my_lng);
-                                
-                                // Update map and go there
                                 map.panTo(me);
                                 
                                 // New person icon image
@@ -98,8 +119,10 @@
                                                 title: (my_data.vehicles[i].username),
                                                 icon: vehicle
                                         });
+
+                                        // Add marker to map with handling of click
                                         marker.setMap(map);
-                                        google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i));
+                                        google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i, my_data));
                                 }
                         }
                         window.onload = init;
