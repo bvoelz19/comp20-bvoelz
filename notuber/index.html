@@ -67,7 +67,6 @@
 
                         function distance_away(my_data, index, my_lat, my_lng)
                         {
-                                console.log("beginning of distance_away");
                                 var R = 6371; // metres
                                 var φ1 = toRad(my_lat);
                                 var φ2 = toRad(my_data.vehicles[index].lat);
@@ -79,13 +78,22 @@
                                         Math.sin(Δλ/2) * Math.sin(Δλ/2);
                                 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-                                var d = R * c;
-                                console.log("d: " + d);
-                                return d;
+                                return R * c;
                         }
 
                         function toRad(x) {
                                 return x * Math.PI / 180;
+                        }
+
+                        function get_identity(my_data, image_v, person)
+                        {
+                                if (my_data.vehicles != undefined) {
+                                        status = document.getElementById("status").innerHTML = "</br>You are a person! Retrieving data...</br>";
+                                        return image_v;
+                                } else {
+                                        document.getElementById("status").innerHTML = "</br>You are a vehicle! Retrieving data...";
+                                        return person;
+                                }
                         }
 
                         function renderMap(my_data)
@@ -98,38 +106,44 @@
                                 // New person icon image
                                 var person = {
                                         url: "person.png",
-                                        size: new google.maps.Size(30, 30),
-                                        scaledSize: new google.maps.Size(30, 30)
+                                        size: new google.maps.Size(40, 40),
+                                        scaledSize: new google.maps.Size(40, 40)
                                 }
 
                                 // New vehicle icon image
-                                var vehicle = {
+                                var image_v = {
                                         url: "vehicle.png",
-                                        size: new google.maps.Size(35, 15),
-                                        scaledSize: new google.maps.Size(35, 15)
+                                        size: new google.maps.Size(50, 17),
+                                        scaledSize: new google.maps.Size(50, 17)
                                 }
+
+                                var others_img = get_identity(my_data, image_v, person);
 
                                 // Put others on the map
                                 for (i = 0; i < my_data.vehicles.length; i++) {
                                         var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
                                         
-                                        // Create a marker
                                         marker = new google.maps.Marker ({
                                                 position: pos,
                                                 title: (my_data.vehicles[i].username),
-                                                icon: vehicle
+                                                icon: others_img
                                         });
 
-                                        // Add marker to map with handling of click
                                         marker.setMap(map);
                                         google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i, my_data));
                                 }
+                                update_status(i + 1);
+                        }
+
+                        function update_status(num) {
+                                document.getElementById("status").innerHTML = "There are " + num + " SOMETHINGS" + " near you!";
                         }
                         window.onload = init;
                 </script>
         </head>
         
         <body>
+                <div id="status"></div>
                 <div id="map_canvas"></div>
         </body>
 </html>

@@ -1,6 +1,6 @@
 html {
 	height: 100%;
-	font-family: "Comic Sans MS";
+	font-family: "Helvetica Neue";
 }
 
 body {
@@ -21,4 +21,10 @@ body {
 
 #infoWindow {
 	font-size: 12px;
+}
+
+#status {
+	text-align: center;
+	height: 15%;
+	border-style: solid;
 }
