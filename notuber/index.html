@@ -18,6 +18,27 @@
                                                 center: me,
                                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                                         }
+                        // New person icon image
+                        var person = {
+                                url: "person.png",
+                                size: new google.maps.Size(40, 40),
+                                scaledSize: new google.maps.Size(40, 40)
+                        }
+
+                        // New vehicle icon image
+                        var image_v = {
+                                url: "vehicle.png",
+                                size: new google.maps.Size(50, 17),
+                                scaledSize: new google.maps.Size(50, 17)
+                        }  
+
+                        // Image at user's location                       
+                        var my_image = {
+                                url: "me.png",
+                                size: new google.maps.Size(50, 50),
+                                scaledSize: new google.maps.Size(50, 50)
+                        }
+
                         var map;
                         var marker;
                         var infowindow = new google.maps.InfoWindow();
@@ -88,35 +109,30 @@
                         function get_identity(my_data, image_v, person)
                         {
                                 if (my_data.vehicles != undefined) {
-                                        status = document.getElementById("status").innerHTML = "</br>You are a person! Retrieving data...</br>";
+                                        status = document.getElementById("status").innerHTML = "You are a person! Retrieving data...</br>";
                                         return image_v;
                                 } else {
-                                        document.getElementById("status").innerHTML = "</br>You are a vehicle! Retrieving data...";
+                                        document.getElementById("status").innerHTML = "You are a vehicle! Retrieving data...";
                                         return person;
                                 }
                         }
 
                         function renderMap(my_data)
                         {                                
-                                console.log(my_data);
                                 // Update map to my location and go there
                                 me = new google.maps.LatLng(my_lat, my_lng);
                                 map.panTo(me);
-                                
-                                // New person icon image
-                                var person = {
-                                        url: "person.png",
-                                        size: new google.maps.Size(40, 40),
-                                        scaledSize: new google.maps.Size(40, 40)
-                                }
 
-                                // New vehicle icon image
-                                var image_v = {
-                                        url: "vehicle.png",
-                                        size: new google.maps.Size(50, 17),
-                                        scaledSize: new google.maps.Size(50, 17)
-                                }
+                                // Add me to the map
+                                my_marker = new google.maps.Marker ({
+                                        position: me,
+                                        title: "6vZ9qT63",
+                                        icon: my_image
+                                });
+                                my_marker.setMap(map);
+                                google.maps.event.addListener(my_marker, 'click', handleMarkerClick(my_marker, 0, my_data));
 
+                                // Determine which images to display for other users on the map
                                 var others_img = get_identity(my_data, image_v, person);
 
                                 // Put others on the map
@@ -132,11 +148,21 @@
                                         marker.setMap(map);
                                         google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i, my_data));
                                 }
-                                update_status(i + 1);
+                                others_identity = get_other_identity(my_data);
+                                update_status(my_data.vehicles.length, others_identity);
                         }
 
-                        function update_status(num) {
-                                document.getElementById("status").innerHTML = "There are " + num + " SOMETHINGS" + " near you!";
+                        function get_other_identity(my_data)
+                        {
+                                if (my_data.vehicles != undefined) {
+                                        return "drivers";
+                                } else {
+                                        return "passengers";
+                                }
+                        }
+
+                        function update_status(num, other_identity) {
+                                document.getElementById("status").innerHTML = "There are " + num + " " + other_identity + " near you!";
                         }
                         window.onload = init;
                 </script>
