@@ -8,7 +8,7 @@
                 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
                 <link rel="stylesheet" href="style.css" />
                 
-                <script>
+                <script type="text/javascript">
                         var my_lat = 0;
                         var my_lng = 0;
                         var xhr = new XMLHttpRequest();
@@ -19,12 +19,12 @@
                                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                                         }
                         var map;
-                        var my_data;
                         var marker;
                         var infowindow = new google.maps.InfoWindow();
                         
                         function init()
                         {
+                                console.log("1");
                                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                                 getMyLocation();
                         }
@@ -35,8 +35,6 @@
                                                 my_lat = position.coords.latitude;
                                                 my_lng = position.coords.longitude;
                                                 wrapperGetData();
-                                                console.log("1");
-                                                renderMap();
                                         });
                                 }
                                 else {
@@ -48,74 +46,67 @@
                                 url = "https://defense-in-derpth.herokuapp.com/submit";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                                
+                                var my_data;
                                 xhr.onreadystatechange = function() { //Call a function when the state changes.
                                         if (this.readyState == 4 && this.status == 200) {
-                                                console.log(xhr.responseText);
                                                 my_data = JSON.parse(xhr.responseText);
+                                                renderMap(my_data);
                                         }
                                 }
-
                                 xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
                         }
 
-                        function renderMap()
+                        function handleMarkerClick(marker, index)
                         {
+                                return function() {
+                                        stringContent = '<div id="username">' + marker.title + '<br/></div>' + '<div id="infoWindow">...is ' + 0 + ' miles away from me</div>';
+                                        infowindow.setContent(stringContent);
+                                        infowindow.open(map, marker);
+                                };
+                        }
+
+                        function renderMap(my_data)
+                        {
+                                console.log(my_data);
                                 console.log("2");
                                 me = new google.maps.LatLng(my_lat, my_lng);
                                 
-                                console.log("vehicles length: " + my_data.["vehicles"].length);
-
                                 // Update map and go there
                                 map.panTo(me);
                                 
-                                // New icon image
-                                var image = {
+                                // New person icon image
+                                var person = {
                                         url: "person.png",
                                         size: new google.maps.Size(30, 30),
                                         scaledSize: new google.maps.Size(30, 30)
                                 }
 
-                                // Put me on the map
-                                marker = new google.maps.Marker ({
-                                        position: me,
-                                        title: "Temp",
-                                        icon: image
-                                });
-                                marker.setMap(map);
-                                google.maps.event.addListener(marker, 'click', function() {
-                                        infowindow.setContent(marker.title);
-                                        infowindow.open(map, marker);
-                                });
-
-
-                                if (my_data == undefined) {
-                                        return;
+                                // New vehicle icon image
+                                var vehicle = {
+                                        url: "vehicle.png",
+                                        size: new google.maps.Size(35, 15),
+                                        scaledSize: new google.maps.Size(35, 15)
                                 }
+
                                 // Put others on the map
-                                for (i = 0; i < 1; i++) {
-                                        //var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
+                                for (i = 0; i < my_data.vehicles.length; i++) {
+                                        var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
                                         
                                         // Create a marker
                                         marker = new google.maps.Marker ({
-                                                //position: pos,
-                                                title: "Temp",
-                                                icon: image
+                                                position: pos,
+                                                title: (my_data.vehicles[i].username),
+                                                icon: vehicle
                                         });
                                         marker.setMap(map);
-                                                
-                                        // Open info window on when you click on the marker
-                                        google.maps.event.addListener(marker, 'click', function() {
-                                                infowindow.setContent(marker.title);
-                                                infowindow.open(map, marker);
-                                        });
+                                        google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i));
                                 }
                         }
-
+                        window.onload = init;
                 </script>
         </head>
         
-        <body onload="init()">
+        <body>
                 <div id="map_canvas"></div>
         </body>
 </html>
