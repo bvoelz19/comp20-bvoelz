@@ -7,8 +7,8 @@
                 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
                 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
                 <link rel="stylesheet" href="style.css" />
-                
                 <script type="text/javascript">
+                        // Set up variables
                         var my_lat = 0;
                         var my_lng = 0;
                         var xhr = new XMLHttpRequest();
@@ -18,6 +18,7 @@
                                                 center: me,
                                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                                         }
+
                         // New person icon image
                         var person = {
                                 url: "person.png",
@@ -43,12 +44,14 @@
                         var marker;
                         var infowindow = new google.maps.InfoWindow();
                         
+                        // Initialize map and execute run
                         function init()
                         {
                                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                                 run();
                         }
                         
+                        // Ensures navigation is functioning
                         function run() {
                                 if (navigator.geolocation) { 
                                         navigator.geolocation.getCurrentPosition(function(position) {
@@ -62,13 +65,14 @@
                                 }
                         }
 
+                        // Sends request, parses JSON, and passes data into render function
                         function wrapperGetData() {
                                 url = "https://defense-in-derpth.herokuapp.com/submit";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                                 var my_data;
                                 xhr.onreadystatechange = function() { //Call a function when the state changes.
-                                        if (this.readyState == 4 && this.status == 200) {
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
                                                 my_data = JSON.parse(xhr.responseText);
                                                 renderMap(my_data);
                                         }
@@ -76,16 +80,21 @@
                                 xhr.send("username=6vZ9qT63&lat=" + my_lat + "&lng=" + my_lng);
                         }
 
+                        // Handles click on marker
                         function handleMarkerClick(marker, index, my_data)
                         {
                                 return function() {
                                         dist = distance_away(my_data, index, my_lat, my_lng);
+                                        if (marker.title == "6vZ9qT63") {
+                                                dist = 0;
+                                        }
                                         stringContent = '<div id="username">' + marker.title + '<br/></div>' + '<div id="infoWindow">...is ' + dist + ' miles away from me</div>';
                                         infowindow.setContent(stringContent);
                                         infowindow.open(map, marker);
                                 };
                         }
 
+                        // Calculates distance from marker to user
                         function distance_away(my_data, index, my_lat, my_lng)
                         {
                                 var R = 6371; // metres
@@ -102,10 +111,13 @@
                                 return R * c;
                         }
 
+                        // Converts degrees to radians
                         function toRad(x) {
                                 return x * Math.PI / 180;
                         }
 
+                        // Check to see what the user's identity is to determine which images
+                        // to render other users as
                         function get_identity(my_data, image_v, person)
                         {
                                 if (my_data.vehicles != undefined) {
@@ -117,10 +129,12 @@
                                 }
                         }
 
+                        // Renders map with data from server
                         function renderMap(my_data)
                         {                                
                                 // Update map to my location and go there
                                 me = new google.maps.LatLng(my_lat, my_lng);
+                                console.log("my lat: " + my_lat + " my lng: " + my_lng);
                                 map.panTo(me);
 
                                 // Add me to the map
@@ -152,6 +166,8 @@
                                 update_status(my_data.vehicles.length, others_identity);
                         }
 
+                        // Determines the identity of other users to figure out which icon
+                        // to display for them on map
                         function get_other_identity(my_data)
                         {
                                 if (my_data.vehicles != undefined) {
@@ -161,9 +177,17 @@
                                 }
                         }
 
+                        // Rounds value to certain number of decimals
+                        function round(value, decimals) {
+                                return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+                        }
+
+                        // Updates HTML with status message at top of screen
                         function update_status(num, other_identity) {
                                 document.getElementById("status").innerHTML = "There are " + num + " " + other_identity + " near you!";
                         }
+
+                        // Set window onload
                         window.onload = init;
                 </script>
         </head>
