@@ -18,7 +18,10 @@
                                                 center: me,
                                                 mapTypeId: google.maps.MapTypeId.ROADMAP
                                         }
-
+                        var map;
+                        var marker;
+                        var infowindow = new google.maps.InfoWindow();
+                        
                         // New person icon image
                         var person = {
                                 url: "person.png",
@@ -39,10 +42,6 @@
                                 size: new google.maps.Size(50, 50),
                                 scaledSize: new google.maps.Size(50, 50)
                         }
-
-                        var map;
-                        var marker;
-                        var infowindow = new google.maps.InfoWindow();
                         
                         // Initialize map and execute run
                         function init()
@@ -187,7 +186,7 @@
                                 document.getElementById("status").innerHTML = "There are " + num + " " + other_identity + " near you!";
                         }
 
-                        // Set window onload
+                        // Set window onload to the initialization function
                         window.onload = init;
                 </script>
         </head>
