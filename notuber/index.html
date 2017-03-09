@@ -133,7 +133,6 @@
                         {                                
                                 // Update map to my location and go there
                                 me = new google.maps.LatLng(my_lat, my_lng);
-                                console.log("my lat: " + my_lat + " my lng: " + my_lng);
                                 map.panTo(me);
 
                                 // Add me to the map
@@ -147,14 +146,31 @@
 
                                 // Determine which images to display for other users on the map
                                 var others_img = get_identity(my_data, image_v, person);
+                                others = "";
+                                others_vehicles = true;
+                                if (others_img.url == "person.png") {
+                                        length = my_data.passengers.length;
+                                        others_vehicles = false;
+
+                                } else {
+                                        length = my_data.vehicles.length;
+                                }
 
                                 // Put others on the map
-                                for (i = 0; i < my_data.vehicles.length; i++) {
-                                        var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
+                                for (i = 0; i < length; i++) {
+                                        username = "";
+                                        if (others_vehicles == true) {
+                                                var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
+                                                username = my_data.vehicles[i].username;
+                                        } else {
+                                                var pos = new google.maps.LatLng(my_data.passengers[i].lat, my_data.passengers[i].lng);
+                                                username = my_data.passengers[i].username;
+                                        }
                                         
+
                                         marker = new google.maps.Marker ({
                                                 position: pos,
-                                                title: (my_data.vehicles[i].username),
+                                                title: username,
                                                 icon: others_img
                                         });
 
@@ -162,7 +178,7 @@
                                         google.maps.event.addListener(marker, 'click', handleMarkerClick(marker, i, my_data));
                                 }
                                 others_identity = get_other_identity(my_data);
-                                update_status(my_data.vehicles.length, others_identity);
+                                update_status(length, others_identity);
                         }
 
                         // Determines the identity of other users to figure out which icon
