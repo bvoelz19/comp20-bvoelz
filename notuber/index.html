@@ -150,22 +150,22 @@
                                 others = "";
                                 others_vehicles = true;
                                 if (others_img.url == "person.png") {
-                                        length = my_data.passengers.length;
+                                        length = my_data.length;
                                         others_vehicles = false;
 
                                 } else {
-                                        length = my_data.vehicles.length;
+                                        length = my_data.ength;
                                 }
 
                                 // Put others on the map
                                 for (i = 0; i < length; i++) {
                                         username = "";
                                         if (others_vehicles == true) {
-                                                var pos = new google.maps.LatLng(my_data.vehicles[i].lat, my_data.vehicles[i].lng);
-                                                username = my_data.vehicles[i].username;
+                                                var pos = new google.maps.LatLng(my_data[i].lat, my_data[i].lng);
+                                                username = my_data[i].username;
                                         } else {
-                                                var pos = new google.maps.LatLng(my_data.passengers[i].lat, my_data.passengers[i].lng);
-                                                username = my_data.passengers[i].username;
+                                                var pos = new google.maps.LatLng(my_data[i].lat, my_data[i].lng);
+                                                username = my_data[i].username;
                                         }
                                         
 
