@@ -66,12 +66,13 @@
 
                         // Sends request, parses JSON, and passes data into render function
                         function wrapperGetData() {
-                                url = "gentle-coast-23140.herokuapp.com/submit";
+                                url = "https://gentle-coast-23140.herokuapp.com/submit";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                                 var my_data;
                                 xhr.onreadystatechange = function() { //Call a function when the state changes.
                                         if (xhr.readyState == 4 && xhr.status == 200) {
+                                                console.log("json: " + xhr.responseText);
                                                 my_data = JSON.parse(xhr.responseText);
                                                 renderMap(my_data);
                                         }
@@ -97,14 +98,14 @@
                         function distance_away(my_data, index, my_lat, my_lng)
                         {
                                 var R = 6371; // metres
-                                var φ1 = toRad(my_lat);
-                                var φ2 = toRad(my_data.vehicles[index].lat);
-                                var Δφ = toRad((my_data.vehicles[index].lat - my_lat));
-                                var Δλ = toRad((my_data.vehicles[index].lng - my_lng));
+                                var q1 = toRad(my_lat);
+                                var q2 = toRad(my_data.vehicles[index].lat);
+                                var dq = toRad((my_data.vehicles[index].lat - my_lat));
+                                var dl = toRad((my_data.vehicles[index].lng - my_lng));
 
-                                var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                                        Math.cos(φ1) * Math.cos(φ2) *
-                                        Math.sin(Δλ/2) * Math.sin(Δλ/2);
+                                var a = Math.sin(dq/2) * Math.sin(dq/2) +
+                                        Math.cos(q1) * Math.cos(q2) *
+                                        Math.sin(dl/2) * Math.sin(dl/2);
                                 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
                                 return R * c;
