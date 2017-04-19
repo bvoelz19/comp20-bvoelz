@@ -1,3 +1,8 @@
+html {
+        margin-bottom: 10%;
+        margin-top: 10%;
+}
+
 p {
         margin-left: 5%;
         margin-right: 30%;
@@ -20,6 +25,7 @@ h1 {
 h2 {
         margin-left: 2%;
         text-decoration: underline;
+        font-variant: small-caps;
 }
 
 #details {
