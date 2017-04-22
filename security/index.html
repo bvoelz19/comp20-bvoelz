@@ -26,7 +26,12 @@
            I will now describe.</p>
 
         <h2>Abstract of Findings</h2>
-        <p>Overview of security and privacy issues found</p>
+        <p>In examining the 'notuber' application, I was able to find three major privacy/security
+           vulnerabilities that can and should be remedied. First, I found a privacy issue in the
+           index page that consisted of the client's username hard-coded into the HTML. Second, I
+           discovered that the developer is not sanitizing client data before processing requests. 
+           Lastly, I found that as a result of not sanitizing data, the application is vulnerable to 
+           cross-site scripting (XSS) attacks.</p>
 
         <h2>Issues Found</h2>
         <div class="subheader">Public Information</div>
@@ -40,7 +45,8 @@
            actions (i.e. posing as the user to send hundreds of requests to rack up credit card bill,
            leave negative reviews, etc.). I would rank this as a relatively medium level threat, as it
            allows anyone to send requests to the server to gather data about the user's location and private
-           information. </p>
+           information. To remedy this issue, I would recommend that instead the user pass her username
+           dynamically instead of hard-coding it into the HTML.</p>
         </br>
         <div class="subheader">Client Data Sanitization</div>
         <p>When I began looking at the actual JavaScript in the index.js file for the 'notuber' application,
@@ -54,12 +60,8 @@
            request body:</p>
         <img src="sanitizedata.png"/>
         </br>
-        </br>
-        </br>
-        <div class="subheader">Cross Site Scripting (XSS)</div>
-        <p>The final security vulnerability I found is a consequence of the developer's failure to sanitize client
-           data, which was described above. Since I am able to insert JavaScript into the MongoDB database that the
-           developer uses to store information about passengers and vehicles, I ran the following command to insert
+        <p>As a result of the developer's failure to sanitize client data, which was described above, I was able to perform 
+           a cross-site scripting attack by injecting JavaScript into the username field. I ran the following command to insert
            a script that immediately changes the browser window's location to the Google homepage:</p>
         <img src="xss.png"/>
         <p>The issue of cross-site scripting is extremely relevant in the world of web security today, as it remains to
@@ -67,7 +69,18 @@
            dangerous, but I simply wanted to demonstrate that literally any JavaScript could be inserted and run when
            XSS is not taken into consideration when designing a web app. While this XSS attack just redirects the page
            to a harmless URL, a cyber attacker could insert scripts that access the MongoDB database and store passenger
-           locations, passwords, etc.</p>
+           locations, passwords, etc. I would rank this as a relatively high-level threat, as there are essentially infinite
+           possibilities of what an attack could do when exploiting this vulnerability; they could inject literally any
+           JavaScript they wanted.</p>
+        <div class="subheader">Inserting Additional Database Fields</div>
+        <p>After playing with the 'notuber' application's vulnerability to cross-site scripting, I realized that I could
+           insert additional data fields through the '/submit' POST route, and that these fields would be stored on the
+           MongoDB database while still receiving the same server response. To demonstrate this phenomenon, I ran the following command to inject a large text file as a 'Shakespeare' data member:</p>
+        <img src="shakespeare.png"/>
+        <p>I would rank this as a medium level threat, as the only concern is the database cost of storing more data than is 
+           necessary, thus slowing down the GET routes. However, it is evident that one could easily exploit this vulnerability to quickly drive up server costs. Even though these additional fields will not ever be returned to the
+           client through the GET route, it is still an issue that could easily be removed by only adding an object to the
+           MongoDB database that has the desired fields.</p>
 
         <h2>Conclusion</h2>
         <p>In sum, it is clear that in its current state, the 'notuber' application has several major security
